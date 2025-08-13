@@ -1,23 +1,21 @@
 class Solution {
 public:
     int characterReplacement(string s, int k) {
-        int ans = 0, n = s.size();
-        for(char c = 'A'; c <= 'Z'; c++)
-        {
-            int i = 0, j = 0, replaced = 0;
-            while(j < n)
-            {
-                if(s[j] == c)
-                    j++;
-                else if(replaced < k)
-                    j++, replaced++;
-                else if(s[i] == c)
-                    i++;
-                else
-                    i++, replaced--;
-                ans = max(ans, j - i);
+        unordered_map<char, int> count;
+        int res = 0;
+
+        int l = 0, maxf = 0;
+        for (int r = 0; r < s.size(); r++) {
+            count[s[r]]++;
+            maxf = max(maxf, count[s[r]]);
+
+            while ((r - l + 1) - maxf > k) {
+                count[s[l]]--;
+                l++;
             }
+            res = max(res, r - l + 1);
         }
-        return ans;
+
+        return res;
     }
 };
