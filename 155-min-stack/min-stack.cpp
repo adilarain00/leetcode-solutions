@@ -10,6 +10,7 @@ public:
         if (st.empty() || min_val > val) {
             min_val = val;
         }
+
         st.push_back({val, min_val});
     }
 
