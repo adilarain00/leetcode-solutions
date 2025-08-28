@@ -1,73 +1,32 @@
 class LRUCache {
-public:
-    class Node {
-    public:
-        int key, value;
-        Node *next, *prev;
-        Node(int key, int value) {
-            this->key = key;
-            this->value = value;
-            next = NULL;
-            prev = NULL;
-        }
-    };
-
+private:
     int capacity;
-    unordered_map<int, Node*> mp;
+    list<pair<int, int>> dll; // key, value
+    unordered_map<int, list<pair<int, int>>::iterator> cache;
 
-    Node* head = new Node(-1, -1);
-    Node* tail = new Node(-1, -1);
-
-    LRUCache(int capacity) {
-        this->capacity = capacity;
-        head->next = tail;
-        tail->prev = head;
-    }
-
-    void deleteNode(Node* node) {
-        node->prev->next = node->next;
-        node->next->prev = node->prev;
-    }
-
-    void insertAtHead(Node* node) {
-        Node* temp = head->next;
-        head->next = node;
-        node->prev = head;
-
-        node->next = temp;
-        temp->prev = node;
-    }
+public:
+    LRUCache(int capacity) { this->capacity = capacity; }
 
     int get(int key) {
-        if (mp.find(key) == mp.end())
+        if (cache.find(key) == cache.end())
             return -1;
-        else {
-            Node* currNode = mp[key];
-            deleteNode(currNode);
-            insertAtHead(currNode);
-            return currNode->value;
-        }
+        auto node = cache[key];
+        int val = node->second;
+        dll.erase(node);
+        dll.push_front({key, val});
+        cache[key] = dll.begin();
+        return val;
     }
 
     void put(int key, int value) {
-        if (mp.find(key) != mp.end()) {
-            Node* currNode = mp[key];
-            currNode->value = value;
-            deleteNode(currNode);
-            insertAtHead(currNode);
-        } else {
-            Node* newNode = new Node(key, value);
-            if (mp.size() == capacity) {
-                Node* todel = tail->prev;
-                mp.erase(todel->key);
-                deleteNode(tail->prev);
-                insertAtHead(newNode);
-                mp[key] = newNode;
-                delete todel;
-            } else {
-                insertAtHead(newNode);
-                mp[key] = newNode;
-            }
+        if (cache.find(key) != cache.end()) {
+            dll.erase(cache[key]);
+        } else if (dll.size() == capacity) {
+            auto last = dll.back();
+            cache.erase(last.first);
+            dll.pop_back();
         }
+        dll.push_front({key, value});
+        cache[key] = dll.begin();
     }
 };
