@@ -1,18 +1,22 @@
 class Solution {
-public:
-    int max_diameter = 0;
+    int diameter = 0;
 
-    int height(TreeNode* node) {
-        if (!node)
-            return 0;
-        int left = height(node->left);
-        int right = height(node->right);
-        max_diameter = max(max_diameter, left + right);
-        return max(left, right) + 1;
+public:
+    int diameterOfBinaryTree(TreeNode* root) {
+        depth(root);
+        return diameter;
     }
 
-    int diameterOfBinaryTree(TreeNode* root) {
-        height(root);
-        return max_diameter;
+private:
+    int depth(TreeNode* node) {
+        if (!node)
+            return 0;
+
+        int left = depth(node->left);
+        int right = depth(node->right);
+
+        diameter = max(diameter, left + right);
+
+        return 1 + max(left, right);
     }
 };
