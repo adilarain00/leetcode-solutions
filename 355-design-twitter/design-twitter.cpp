@@ -1,41 +1,45 @@
 class Twitter {
+private:
+    int timeStamp;
+    unordered_map<int, unordered_set<int>> follows;
+    unordered_map<int, vector<pair<int, int>>> tweets;
+
 public:
-    Twitter() {}
-    int count = 0;
-    unordered_map<int, vector<pair<int, int>>> m;
-    map<pair<int, int>, int> m1;
+    Twitter() { timeStamp = 0; }
+
     void postTweet(int userId, int tweetId) {
-        m[userId].push_back({count, tweetId});
-        count++;
+        tweets[userId].push_back({timeStamp++, tweetId});
     }
 
     vector<int> getNewsFeed(int userId) {
-        unordered_set<int> v;
-        vector<pair<int, int>> v1;
-        vector<int> ans;
-        v.insert(userId);
-        for (auto i : m1) {
-            if (i.first.first == userId && i.second > 0)
-                v.insert(i.first.second);
+        priority_queue<pair<int, int>> pq;
+
+        for (auto& t : tweets[userId])
+            pq.push(t);
+
+        for (int followee : follows[userId]) {
+            for (auto& t : tweets[followee]) {
+                pq.push(t);
+            }
         }
-        for (auto i : v) {
-            v1.insert(v1.end(), m[i].begin(), m[i].end());
+
+        vector<int> feed;
+        for (int i = 0; i < 10 && !pq.empty(); i++) {
+            feed.push_back(pq.top().second);
+            pq.pop();
         }
-        sort(v1.rbegin(), v1.rend());
-        for (auto i : v1) {
-            if (ans.size() == 10)
-                break;
-            ans.push_back(i.second);
-        }
-        return ans;
+        return feed;
     }
 
     void follow(int followerId, int followeeId) {
-        m1[{followerId, followeeId}]++;
+        if (followerId != followeeId) {
+            follows[followerId].insert(followeeId);
+        }
     }
 
     void unfollow(int followerId, int followeeId) {
-        if (m1[{followerId, followeeId}])
-            m1[{followerId, followeeId}]--;
+        if (follows.count(followerId)) {
+            follows[followerId].erase(followeeId);
+        }
     }
 };
