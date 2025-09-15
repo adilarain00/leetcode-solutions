@@ -1,35 +1,28 @@
 class Solution {
 public:
-    int max = 0;
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int maxArea = 0;
 
-    void dfs(int i, int j, int m, int n, std::vector<std::vector<int>>& grid,
-             int& curr) {
-        if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == 0)
-            return;
+        function<int(int, int)> dfs = [&](int r, int c) {
+            if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] == 0)
+                return 0;
 
-        grid[i][j] = 0;
-        curr++;
-        max = std::max(max, curr);
+            grid[r][c] = 0;
 
-        dfs(i - 1, j, m, n, grid, curr);
-        dfs(i + 1, j, m, n, grid, curr);
-        dfs(i, j - 1, m, n, grid, curr);
-        dfs(i, j + 1, m, n, grid, curr);
-    }
+            return 1 + dfs(r + 1, c) + dfs(r - 1, c) + dfs(r, c + 1) +
+                   dfs(r, c - 1);
+        };
 
-    int maxAreaOfIsland(std::vector<std::vector<int>>& grid) {
-        max = 0;
-        int m = grid.size();
-        int n = grid[0].size();
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 1) {
-                    int curr = 0;
-                    dfs(i, j, m, n, grid, curr);
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == 1) {
+                    maxArea = max(maxArea, dfs(r, c));
                 }
             }
         }
-        return max;
+
+        return maxArea;
     }
 };
