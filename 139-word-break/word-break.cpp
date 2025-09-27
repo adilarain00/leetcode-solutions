@@ -7,6 +7,7 @@ public:
         for (int i = 1; i <= s.size(); i++) {
             for (const string& w : wordDict) {
                 int start = i - w.length();
+
                 if (start >= 0 && dp[start] &&
                     s.substr(start, w.length()) == w) {
                     dp[i] = true;
@@ -14,6 +15,7 @@ public:
                 }
             }
         }
+
         return dp[s.size()];
     }
 };
