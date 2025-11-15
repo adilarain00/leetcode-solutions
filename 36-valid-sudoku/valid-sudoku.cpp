@@ -8,17 +8,14 @@ public:
                 if (board[i][j] == '.')
                     continue;
 
-                int num = board[i][j] - '1'; // Convert '1'-'9' to 0-8
-                int mask = 1 << num;         // Create bitmask for the number
+                int num = board[i][j] - '1';
+                int mask = 1 << num;
                 int boxIndex = (i / 3) * 3 + j / 3;
-
-                // Check if the number is already set in the row, column, or box
+                
                 if (rows[i] & mask || columns[j] & mask ||
-                    boxes[boxIndex] & mask) {
+                    boxes[boxIndex] & mask)
                     return false;
-                }
 
-                // Mark the number in the row, column, and box
                 rows[i] |= mask;
                 columns[j] |= mask;
                 boxes[boxIndex] |= mask;
