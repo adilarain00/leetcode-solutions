@@ -1,28 +1,40 @@
 class Solution {
 public:
     vector<int> majorityElement(vector<int>& nums) {
-        // Create a frequency map to store the count of each element
-        unordered_map<int, int> elementCountMap;
+        int n = nums.size();
+        int num1 = -1, num2 = -1, cnt1 = 0, cnt2 = 0;
 
-        // Iterate through the input array to count element occurrences
-        for (int i = 0; i < nums.size(); i++) {
-            elementCountMap[nums[i]]++;
-        }
-
-        vector<int> majorityElements;
-        int threshold = nums.size() / 3;
-
-        // Iterate through the frequency map to identify majority elements
-        for (auto elementCountPair : elementCountMap) {
-            int element = elementCountPair.first;
-            int count = elementCountPair.second;
-
-            // Check if the element count is greater than the threshold
-            if (count > threshold) {
-                majorityElements.push_back(element);
+        for (int num : nums) {
+            if (num == num1) {
+                cnt1++;
+            } else if (num == num2) {
+                cnt2++;
+            } else if (cnt1 == 0) {
+                num1 = num;
+                cnt1 = 1;
+            } else if (cnt2 == 0) {
+                num2 = num;
+                cnt2 = 1;
+            } else {
+                cnt1--;
+                cnt2--;
             }
         }
 
-        return majorityElements;
+        cnt1 = cnt2 = 0;
+        for (int num : nums) {
+            if (num == num1)
+                cnt1++;
+            else if (num == num2)
+                cnt2++;
+        }
+
+        vector<int> res;
+        if (cnt1 > n / 3)
+            res.push_back(num1);
+        if (cnt2 > n / 3)
+            res.push_back(num2);
+
+        return res;
     }
 };
