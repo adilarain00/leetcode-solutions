@@ -6,12 +6,16 @@ public:
 
         // Merge two sorted halves
         while (i <= mid && j <= right) {
-            if (nums[i] <= nums[j]) temp.push_back(nums[i++]);
-            else temp.push_back(nums[j++]);
+            if (nums[i] <= nums[j])
+                temp.push_back(nums[i++]);
+            else
+                temp.push_back(nums[j++]);
         }
 
-        while (i <= mid) temp.push_back(nums[i++]);
-        while (j <= right) temp.push_back(nums[j++]);
+        while (i <= mid)
+            temp.push_back(nums[i++]);
+        while (j <= right)
+            temp.push_back(nums[j++]);
 
         // Copy sorted temp back to original array
         for (int k = left; k <= right; ++k) {
@@ -20,7 +24,8 @@ public:
     }
 
     void mergeSort(vector<int>& nums, int left, int right) {
-        if (left >= right) return;
+        if (left >= right)
+            return;
 
         int mid = left + (right - left) / 2;
 
